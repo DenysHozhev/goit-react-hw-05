@@ -1,0 +1,21 @@
+.container {
+  padding: 10px;
+  background-color: blanchedalmond;
+  position: fixed;
+  top: 0;
+
+  width: 100%;
+}
+
+.navList {
+  display: flex;
+  gap: 10px;
+  margin-left: 50px;
+}
+
+.link {
+  color: black;
+}
+.isActive {
+  color: brown;
+}
