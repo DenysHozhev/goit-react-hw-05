@@ -1,10 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { searchMovie } from "../api/Api";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useSearchParams } from "react-router-dom";
 
 export default function MoviesPage() {
   const [request, setRequest] = useState([]);
   const [query, setQuery] = useState("");
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const querySearchParams = searchParams.get("query") || "";
+    setQuery(querySearchParams);
+    if (querySearchParams) {
+      searchMovie(querySearchParams).then((responce) => {
+        setRequest(responce.data.results);
+      });
+    } else {
+      setRequest([]);
+    }
+  }, [searchParams]);
 
   async function searchRequestMovie(event) {
     event.preventDefault();
@@ -12,13 +26,7 @@ export default function MoviesPage() {
       return;
     }
 
-    try {
-      const responce = await searchMovie(query.toLowerCase());
-      setRequest(responce.data.results);
-      console.log(responce.data.results);
-    } catch (error) {
-      console.log({ error });
-    }
+    setSearchParams({ query });
   }
 
   return (
@@ -37,7 +45,9 @@ export default function MoviesPage() {
       <ul>
         {request.map((movie) => (
           <li key={movie.id}>
-            <NavLink to={`/movies/${movie.id}`}>{movie.title}</NavLink>
+            <NavLink to={`/movies/${movie.id}`} state={{ from: location }}>
+              {movie.title}
+            </NavLink>
           </li>
         ))}
       </ul>

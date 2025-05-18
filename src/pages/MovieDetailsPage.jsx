@@ -1,15 +1,25 @@
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import {
   ItemMovieBaseSize,
   ItemMovieBaseUrl,
   ItemMovieDetails,
 } from "../api/Api";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function MovieDetailsPage() {
   const { movieId } = useParams();
 
   console.log(movieId);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const backLink = useRef(location.state?.from || "/");
 
   const [movie, setMovie] = useState(null);
 
@@ -24,10 +34,11 @@ export default function MovieDetailsPage() {
       }
     }
     getMovieDetails();
-  }, []);
+  }, [movieId]);
 
   return (
     <div>
+      <button onClick={() => navigate(backLink.current)}>Go back</button>
       {movie && (
         <>
           <img
